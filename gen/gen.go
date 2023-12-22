@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"embed"
 	"fmt"
+	_ "github.com/LorinHan/webkit/statik"
 	"github.com/rakyll/statik/fs"
 	"io"
 	fs2 "io/fs"
@@ -12,7 +13,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	_ "webkit/statik"
 )
 
 func main() {
