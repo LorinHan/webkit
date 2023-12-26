@@ -1,6 +1,7 @@
 package model
 
 import (
+	"errors"
 	"go.uber.org/zap"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -20,7 +21,7 @@ func DB() *gorm.DB {
 func Init(dbConf config.DBConf) error {
 	var (
 		err     error
-		conf    = &gorm.Config{}
+		conf    = &gorm.Config{TranslateError: true}
 		logConf = logger.Config{
 			SlowThreshold: dbConf.SlowQueryTime,
 			LogLevel:      dbConf.LogLevel,
@@ -58,7 +59,7 @@ func Init(dbConf config.DBConf) error {
 		dbPool.SetConnMaxIdleTime(time.Duration(dbConf.MaxIdleTime) * time.Hour)
 	}
 
-	return nil
+	return errCallbackRegister()
 }
 
 type GormLogger struct {
@@ -67,4 +68,45 @@ type GormLogger struct {
 func (*GormLogger) Write(p []byte) (n int, err error) {
 	zap.S().WithOptions(zap.WithCaller(false)).Info(strings.TrimRight(string(p), "\n"))
 	return len(p), nil
+}
+
+// errCallbackRegister 注册err处理回调
+func errCallbackRegister() error {
+	if err := db.Callback().Query().After("*").Register("err_callback", ErrorCallback); err != nil {
+		return err
+	}
+	if err := db.Callback().Create().After("*").Register("err_callback", ErrorCallback); err != nil {
+		return err
+	}
+	if err := db.Callback().Update().After("*").Register("err_callback", ErrorCallback); err != nil {
+		return err
+	}
+	if err := db.Callback().Delete().After("*").Register("err_callback", ErrorCallback); err != nil {
+		return err
+	}
+	if err := db.Callback().Raw().After("*").Register("err_callback", ErrorCallback); err != nil {
+		return err
+	}
+	if err := db.Callback().Row().After("*").Register("err_callback", ErrorCallback); err != nil {
+		return err
+	}
+	return nil
+}
+
+type DBErr struct {
+	err error
+}
+
+func (d DBErr) Error() string {
+	return d.err.Error()
+}
+
+func ErrorCallback(edb *gorm.DB) {
+	if edb.Error == nil {
+		return
+	}
+	if errors.Is(edb.Error, gorm.ErrRecordNotFound) {
+		return
+	}
+	edb.Error = DBErr{err: edb.Error}
 }

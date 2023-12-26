@@ -22,7 +22,7 @@ var Conf Config
 // InitByEnv 通过环境变量加载配置
 func InitByEnv() {
 	Conf.DB = DBConf{
-		Conn: GetEnvString("POLY_HRMS_DB_CONN", ""),
+		Conn: GetEnvString("DB_CONN", ""),
 	}
 }
 

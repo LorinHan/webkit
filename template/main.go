@@ -31,7 +31,7 @@ func main() {
 	// config.InitByFile("config.yaml")
 
 	if err := model.Init(config.Conf.DB); err != nil {
-		zap.S().Error("数据库初始化失败", err)
+		zap.S().Fatal("数据库初始化失败", err)
 	}
 
 	if err := validator.Init(); err != nil {
