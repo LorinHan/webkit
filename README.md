@@ -170,7 +170,12 @@ if err != nil {
 
 ##### 6.cache
 - 集成go-redis
-- aop封装，以切面形式进行缓存操作
+- [aop封装](https://github.com/LorinHan/webkit/blob/main/template/kit/cache/redis_aop.go#L11)，以aop方式加入缓存切面
+- Cacheable：执行回调函数前会查询缓存，若key不存在则执行回调，将回调执行结果放入缓存，若key存在，将数据映射到参数v(应传入指针)且不执行回调函数
+- Put：执行回调函数后，将回调执行结果放入缓存，与Cacheable不同的是Put不会进行前置查询，常用于更新操作 
+- Evict：执行回调函数后，删除该key的缓存 
+- Put和Evict有以ByDynamicKey为后缀的扩展，可通过回调函数的返回值来设定key
+- [示例：kit/cache/redis_aop_test.go](https://github.com/LorinHan/webkit/blob/main/template/kit/cache/redis_aop_test.go)
 ```go
 kit/cache/redis_aop_test.go
 
