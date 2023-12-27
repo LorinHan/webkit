@@ -39,7 +39,7 @@ defer cancel()
 
 // 关闭 HTTP 服务器
 if err := server.Shutdown(ctx); err != nil {
-zap.S().Fatal("Server shutdown:", err)
+    zap.S().Fatal("Server shutdown:", err)
 }
 zap.S().Info("Server exited")
 ...
@@ -65,13 +65,13 @@ defer logger.Sync()
 kit/logger/logger.go
 
 type Option struct {
-Path       string // 日志文件路径
-Level      string // 日志级别，debug info warn error panic fatal
-MaxSize    int    // 文件多大开始切分
-MaxBackups int  // 保留文件个数
-MaxAge     int  // 文件保存多少天，maxBackups和maxAge都设置为0，则不会删除任何日志文件，全部保留
-Json       bool // 是否用json格式
-Std        bool   // 是否输出到控制台
+    Path       string // 日志文件路径
+    Level      string // 日志级别，debug info warn error panic fatal
+    MaxSize    int    // 文件多大开始切分
+    MaxBackups int  // 保留文件个数
+    MaxAge     int  // 文件保存多少天，maxBackups和maxAge都设置为0，则不会删除任何日志文件，全部保留
+    Json       bool // 是否用json格式
+    Std        bool   // 是否输出到控制台
 }
 ```
 
@@ -99,7 +99,7 @@ config.InitByEnv() // 从环境变量加载配置
 main.go
 
 if err := validator.Init(); err != nil {
-zap.S().Fatal(err)
+    zap.S().Fatal(err)
 }
 ```
 
@@ -109,9 +109,9 @@ zap.S().Fatal(err)
 
 ```go
 type TestValidatorReq struct {
-Name     string `json:"name" binding:"required,min=3,max=50"`
-Email    string `json:"email" binding:"required,email" errMsg:"自定义错误信息:邮箱错误咯"`
-Password string `json:"password" binding:"required,min=6"`
+    Name     string `json:"name" binding:"required,min=3,max=50"`
+    Email    string `json:"email" binding:"required,email" errMsg:"自定义错误信息:邮箱错误咯"`
+    Password string `json:"password" binding:"required,min=6"`
 }
 ```
 
@@ -130,14 +130,14 @@ Password string `json:"password" binding:"required,min=6"`
 ```go
 // tag中加入 name="xxx"
 type TestValidatorReq struct {
-Password     string `json:"password" binding:"required,min=3,max=50" name="密码"`
+    Password     string `json:"password" binding:"required,min=3,max=50" name="密码"`
 }
 
 // 若该字段校验失败，响应的message会将字段"password"替换为"密码"
 {
-"code": 400001,
-"message": "参数错误, 密码长度必须至少为3个字符",
-"data": null
+    "code": 400001,
+    "message": "参数错误, 密码长度必须至少为3个字符",
+    "data": null
 }
 ```
 
@@ -146,14 +146,14 @@ Password     string `json:"password" binding:"required,min=3,max=50" name="密�
 ```go
 // tag中加入 errMsg="xxx"
 type TestValidatorReq struct {
-Email    string `json:"email" binding:"required,email" errMsg:"自定义错误信息-邮箱错误咯"`
+    Email    string `json:"email" binding:"required,email" errMsg:"自定义错误信息-邮箱错误咯"`
 }
 
 // 若该字段校验失败，响应的message会替换为自定义的errMsg
 {
-"code": 400001,
-"message": "参数错误, 自定义错误信息-邮箱错误咯",
-"data": null
+    "code": 400001,
+    "message": "参数错误, 自定义错误信息-邮箱错误咯",
+    "data": null
 }
 ```
 
@@ -165,5 +165,39 @@ data, err := service.HelloSvc.SayHi()
 if err != nil {
     Fail(ctx, enum.FailedGetData, err)
     return
+}
+```
+
+##### 6.cache
+- 集成go-redis
+- aop封装，以切面形式进行缓存操作
+```go
+kit/cache/redis_aop_test.go
+
+func TestCacheable(t *testing.T) {
+    type User struct {
+        ID    int     `json:"id"`
+        Name  string  `json:"name"`
+        Money float64 `json:"money"`
+        OK    bool    `json:"ok"`
+    }
+    // 初始化
+    Init(&redis.Options{Addr: "127.0.0.1:6379"})
+    
+    ctx := context.Background()
+    var user User
+    
+    // 若key不存在，回调函数执行，并将结果放入缓存，下次再执行key已存在，不执行回调，而是将数据映射到user指针
+    if err := Cacheable(ctx, "test", &user, func() (data interface{}, err error) {
+        log.Println("数据库查询等操作，执行了...")
+        return User{
+            ID:   1,
+            Name: "test",
+        }, nil
+    }, time.Minute*10); err != nil {
+        log.Fatal(err)
+    }
+    
+    log.Println("res", user)
 }
 ```
