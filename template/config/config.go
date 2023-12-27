@@ -1,6 +1,7 @@
 package config
 
 import (
+	"github.com/redis/go-redis/v9"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
 	"gorm.io/gorm/logger"
@@ -49,7 +50,8 @@ func GetEnvString(key string, defaultValue string) string {
 }
 
 type Config struct {
-	DB DBConf `json:"db"`
+	DB    DBConf         `json:"db"`
+	Redis *redis.Options `json:"redis"`
 }
 
 type DBConf struct {
