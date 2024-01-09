@@ -20,8 +20,11 @@ func DB() *gorm.DB {
 
 func Init(dbConf config.DBConf) error {
 	var (
-		err     error
-		conf    = &gorm.Config{TranslateError: true}
+		err  error
+		conf = &gorm.Config{
+			TranslateError:         true,
+			SkipDefaultTransaction: true,
+		}
 		logConf = logger.Config{
 			SlowThreshold: dbConf.SlowQueryTime,
 			LogLevel:      dbConf.LogLevel,
