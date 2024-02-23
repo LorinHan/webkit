@@ -7,6 +7,7 @@ import (
 	"gorm.io/gorm/logger"
 	"os"
 	"time"
+	logger2 "webkit/kit/logger"
 	"webkit/util"
 )
 
@@ -22,9 +23,13 @@ var Conf Config
 
 // InitByEnv 通过环境变量加载配置
 func InitByEnv() {
+	Conf.Server = ServerConf{
+		Port: GetEnvString("SERVER_PORT", ":3000"),
+	}
 	Conf.DB = DBConf{
 		Conn: GetEnvString("DB_CONN", ""),
 	}
+	Conf.Logger = logger2.DefaultLog()
 }
 
 // InitByFile 通过文件加载配置
@@ -50,8 +55,14 @@ func GetEnvString(key string, defaultValue string) string {
 }
 
 type Config struct {
-	DB    DBConf         `json:"db"`
-	Redis *redis.Options `json:"redis"`
+	Server ServerConf
+	Logger *logger2.Option
+	DB     DBConf
+	Redis  *redis.Options
+}
+
+type ServerConf struct {
+	Port string
 }
 
 type DBConf struct {

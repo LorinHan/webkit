@@ -19,21 +19,24 @@ import (
 )
 
 func main() {
-	engine := gin.New()
-
-	logger.Init(logger.DefaultLog())
-	defer logger.Sync()
-
-	engine.Use(middleware.Log, gin.RecoveryWithWriter(&middleware.RecoverWriter{}))
-	router.Init(engine)
-
+	// 配置初始化
 	config.InitByEnv()
 	// config.InitByFile("config.yaml")
 
+	// 日志初始化
+	logger.Init(config.Conf.Logger)
+	defer logger.Sync()
+
+	engine := gin.New()
+	engine.Use(middleware.Log, gin.RecoveryWithWriter(&middleware.RecoverWriter{}))
+	router.Init(engine)
+
+	// 数据库初始化
 	if err := model.Init(config.Conf.DB); err != nil {
 		zap.S().Fatal("数据库初始化失败", err)
 	}
 
+	// 参数校验器初始化
 	if err := validator.Init(); err != nil {
 		zap.S().Fatal(err)
 	}
@@ -43,7 +46,7 @@ func main() {
 
 func run(engine *gin.Engine) {
 	server := &http.Server{
-		Addr:    ":8996",
+		Addr:    config.Conf.Server.Port,
 		Handler: engine,
 	}
 
@@ -59,7 +62,7 @@ func run(engine *gin.Engine) {
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM, syscall.SIGKILL)
 	<-quit
 
-	// 创建一个优雅关闭的超时上下文
+	// 创建一个平滑关闭的超时上下文
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 

@@ -16,7 +16,7 @@ import (
 )
 
 func main() {
-	fmt.Println("webkit v1.0.4")
+	fmt.Println("webkit v1.0.5")
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Print("请输入项目名称（默认'test_webkit'）：")
 	input, err := reader.ReadString('\n')

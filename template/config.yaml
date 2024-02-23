@@ -1,3 +1,16 @@
+server:
+  port: ":3000"
+
+logger:
+  path: ""
+  level: "debug"
+  maxSize: 10
+  maxBackups: 0
+  maxAge: 0
+  json: false
+  std: true
+
 db:
-  type: "postgres"
   conn: "host=127.0.0.1 port=5432 user= dbname= password="
+  logLevel: 4       # 1.silent级别，静默； 2.error级别，只打印错误日志； 3.warn级别，只打印警告、慢查询日志； 4.info级别，打印所有sql日志
+  logColorful: true # 日志是否显示颜色
