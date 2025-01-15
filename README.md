@@ -2,7 +2,9 @@
 
 ### 简介
 
-> webkit是用于快捷生成web项目的小工具，集成了一些常见功能，如：平滑关闭、日志切分、参数校验等
+> webkit是用于快捷生成web项目的小工具，集成了一些常见功能，如：平滑关闭、日志切分、参数校验等；
+
+> 如果要对此项目的模板进行修改、添加功能，template文件夹下改动后，执行以下命令重新生成模板的静态文件`statik -src=./template -dest=./ -f`
 
 ### 安装&使用
 
@@ -206,3 +208,6 @@ func TestCacheable(t *testing.T) {
     log.Println("res", user)
 }
 ```
+##### 7.常用工具 util包
+- ordermap.go 支持序列化、反序列化的有序map
+-
