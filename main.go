@@ -16,7 +16,7 @@ import (
 )
 
 func main() {
-	fmt.Println("webkit v1.0.6")
+	fmt.Println("webkit v1.0.7")
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Print("请输入项目名称（默认'test_webkit'）：")
 	input, err := reader.ReadString('\n')
@@ -35,6 +35,24 @@ func main() {
 	}
 	objPath := strings.ReplaceAll(input, "\n", "")
 	objPath = filepath.Join(objPath, projectName)
+
+	var dbType string
+	for {
+		fmt.Print("请选择数据库（pg、dm，默认pg）：")
+		input, err = reader.ReadString('\n')
+		if err != nil {
+			log.Fatal(err)
+		}
+		dbType = strings.ReplaceAll(input, "\n", "")
+		if dbType == "" {
+			dbType = "pg"
+		}
+		if dbType == "pg" || dbType == "dm" {
+			break
+		} else {
+			fmt.Println("数据库错误，请输入pg、dm中的一项")
+		}
+	}
 
 	fileSystem, err := fs.New()
 	if err != nil {
@@ -63,6 +81,13 @@ func main() {
 					file = bytes.ReplaceAll(file, []byte("module webkit"), []byte("module "+projectName))
 				} else {
 					file = bytes.ReplaceAll(file, []byte("webkit/"), []byte(projectName+"/"))
+				}
+			}
+			if info.Name() == "config.go" {
+				switch dbType {
+				case "dm":
+					file = bytes.ReplaceAll(file, []byte(`Type: GetEnvString("DB_TYPE", "pg"),`), []byte(`Type: GetEnvString("DB_TYPE", "dm"),`))
+					file = bytes.ReplaceAll(file, []byte(`Conn: GetEnvString("DB_CONN", "host=127.0.0.1 port=5432 user=cella dbname=test password=111111"),`), []byte(`Conn: GetEnvString("DB_CONN", "dm://username:password@ip:port?schema=dbname"),`))
 				}
 			}
 

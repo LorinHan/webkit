@@ -2,6 +2,7 @@ package model
 
 import (
 	"errors"
+	"github.com/LorinHan/dm-driver/dmgorm2"
 	"go.uber.org/zap"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -37,7 +38,14 @@ func Init(dbConf config.DBConf) error {
 	}
 	conf.Logger = logger.New(log.New(&GormLogger{}, "", 0), logConf)
 
-	db, err = gorm.Open(postgres.Open(dbConf.Conn), conf)
+	switch dbConf.Type {
+	case "pg":
+		db, err = gorm.Open(postgres.Open(dbConf.Conn), conf)
+	case "dm":
+		db, err = gorm.Open(dmgorm2.Open(dbConf.Conn), conf)
+	default:
+		zap.S().Fatal("unknown db type：", dbConf.Type)
+	}
 	if err != nil {
 		return err
 	}

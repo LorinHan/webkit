@@ -27,7 +27,8 @@ func InitByEnv() {
 		Port: GetEnvString("SERVER_PORT", ":3000"),
 	}
 	Conf.DB = DBConf{
-		Conn: GetEnvString("DB_CONN", ""),
+		Type: GetEnvString("DB_TYPE", "pg"),
+		Conn: GetEnvString("DB_CONN", "host=127.0.0.1 port=5432 user=cella dbname=test password=111111"),
 	}
 	Conf.Logger = logger2.DefaultLog()
 }
@@ -66,6 +67,7 @@ type ServerConf struct {
 }
 
 type DBConf struct {
+	Type          string          `json:"type"`
 	Conn          string          `json:"conn"`
 	MaxIdleConn   int             `json:"max_idle_conn"`   // 最大空闲连接
 	MaxOpenConn   int             `json:"max_open_conn"`   // 最大连接数
