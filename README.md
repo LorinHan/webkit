@@ -20,9 +20,10 @@ go install github.com/LorinHan/webkit@latest
 
 ```shell
 webkit
-#> webkit v1.0.0
+#> webkit v1.0.7
 #> 请输入项目名称（默认'test_webkit'）：
 #> 请输入项目路径（默认'./'）：
+#> 请选择数据库（pg、dm 默认pg）：版本>=v1.0.7才有此选项
 ```
 
 ### 功能说明
