@@ -24,6 +24,7 @@ func main() {
 		log.Fatal(err)
 	}
 	projectName := strings.ReplaceAll(input, "\n", "")
+	projectName = strings.ReplaceAll(input, "\r", "")
 	if projectName == "" {
 		projectName = "test_webkit"
 	}
@@ -34,6 +35,7 @@ func main() {
 		log.Fatal(err)
 	}
 	objPath := strings.ReplaceAll(input, "\n", "")
+	objPath = strings.ReplaceAll(input, "\r", "")
 	objPath = filepath.Join(objPath, projectName)
 
 	var dbType string
@@ -44,8 +46,15 @@ func main() {
 			log.Fatal(err)
 		}
 		dbType = strings.ReplaceAll(input, "\n", "")
+		dbType = strings.ReplaceAll(input, "\r", "")
 		if dbType == "" {
 			dbType = "pg"
+		}
+		if strings.Contains(dbType, "pg") {
+			dbType = "pg"
+		}
+		if strings.Contains(dbType, "dm") {
+			dbType = "dm"
 		}
 		if dbType == "pg" || dbType == "dm" {
 			break
