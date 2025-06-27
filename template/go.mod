@@ -3,7 +3,7 @@ module webkit
 go 1.18
 
 require (
-	github.com/LorinHan/dm-driver v1.0.7
+	github.com/LorinHan/dm-driver v1.0.8
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-playground/locales v0.14.1
 	github.com/go-playground/universal-translator v0.18.1

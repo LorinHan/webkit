@@ -1,7 +1,7 @@
 github.com/BurntSushi/toml v1.3.2 h1:o7IhLm0Msx3BaB+n3Ag7L8EVlByGnpq14C4YWiu/gL8=
 github.com/BurntSushi/toml v1.3.2/go.mod h1:CxXYINrC8qIiEnFrOxCa7Jy5BFHlXnUU2pbicEuybxQ=
-github.com/LorinHan/dm-driver v1.0.7 h1:lIYL5NImeCBsWwNbg0kfjMeqKYZATtBDdeAAf1beKKM=
-github.com/LorinHan/dm-driver v1.0.7/go.mod h1:pFH6o1CWITIYdzdK3NFcO9q3IeRGBk9/2yDUZ0wPgOQ=
+github.com/LorinHan/dm-driver v1.0.8 h1:va5AXNS77F64nAc7BdrTuqWW0j8WQwtEr3Mljl5txQM=
+github.com/LorinHan/dm-driver v1.0.8/go.mod h1:pFH6o1CWITIYdzdK3NFcO9q3IeRGBk9/2yDUZ0wPgOQ=
 github.com/bsm/ginkgo/v2 v2.12.0 h1:Ny8MWAHyOepLGlLKYmXG4IEkioBysk6GpaRTLC8zwWs=
 github.com/bsm/gomega v1.27.10 h1:yeMWxP2pV2fG3FgAODIY8EiRE3dy0aeFYt4l7wh6yKA=
 github.com/bytedance/sonic v1.5.0/go.mod h1:ED5hyg4y6t3/9Ku1R6dU/4KyJ48DZ4jPhfY1O2AihPM=
